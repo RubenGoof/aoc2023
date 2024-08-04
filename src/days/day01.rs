@@ -3,12 +3,11 @@ use std::fs::read_to_string;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-
-
 pub fn solve() -> SolutionPair {
     // Your solution here...
     //https://doc.rust-lang.org/rust-by-example/std_misc/file/read_lines.html
-    let test_input_1 = read_to_string("C:/ProgrammingProjects/Rust/aoc2023/input/day01_1").expect("Did not find file!");
+    let test_input_1 = read_to_string("C:/ProgrammingProjects/Rust/aoc2023/input/day01_1")
+        .expect("Did not find file!");
     // println!("Test: {test_input_1}");
 
     let sol1: u64 = solution_1(test_input_1.clone());
@@ -16,7 +15,6 @@ pub fn solve() -> SolutionPair {
 
     (Solution::from(sol1), Solution::from(sol2))
 }
-
 
 fn solution_1(input: String) -> u64 {
     //loop through all lines and combine first and last digit to create a number
@@ -26,11 +24,10 @@ fn solution_1(input: String) -> u64 {
     for line in input.lines() {
         let digits = get_first_last_digit(&line);
         // println!("digits: {:?}", digits);
-        sum += digits.0 * 10 +digits.1;
+        sum += digits.0 * 10 + digits.1;
         // println!("Sum: {sum}")
-    };
+    }
     sum
-
 }
 
 fn get_first_last_digit(line: &str) -> (u64, u64) {
@@ -43,23 +40,24 @@ fn get_first_last_digit(line: &str) -> (u64, u64) {
             x = c;
         };
         latestc = c;
-        counter +=1
-    };
+        counter += 1
+    }
     // println!("Value: {} and {}", x, latestc);
-    return (x.to_digit(RADIX).expect("No digit!") as u64,
-     latestc.to_digit(RADIX).expect("No digit!") as u64)
+    return (
+        x.to_digit(RADIX).expect("No digit!") as u64,
+        latestc.to_digit(RADIX).expect("No digit!") as u64,
+    );
 }
 
 fn solution_2(input: String) -> u64 {
-
     let mut sum: u64 = 0;
     for line in input.lines() {
         let replaced_line = replace_written_digits(line);
         let digits = get_first_last_digit(&replaced_line);
         // println!("digits: {:?}", digits);
-        sum += digits.0 * 10 +digits.1;
+        sum += digits.0 * 10 + digits.1;
         // println!("Sum: {sum}")
-    };
+    }
     sum
 }
 
