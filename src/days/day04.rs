@@ -9,38 +9,39 @@ struct Card {
 
 impl Card {
     fn new(input: &str) -> Card {
-        println!("input: {:?}", input);
+        // println!("input: {:?}", input);
         let card_str_split = match input.split_once(":"){
             Some(x) => x.1,
             None => "none",
         };
     
-        println!("card_str_split: {:?}", card_str_split);
+        // println!("card_str_split: {:?}", card_str_split);
         let numbers_split = match card_str_split.split_once("|") {
             Some(x) => x,
             None => ("none", "none"),
         };
     
-        println!("numbers_split: {:?}", numbers_split);
+        // println!("numbers_split: {:?}", numbers_split);
         let mut winning_numbers: Vec<u32> = Vec::new();
         for x in numbers_split.0.split(" "){
             match x.parse::<u32>() {
                 Ok(y) => winning_numbers.push(y),
-                Err(_) => println!("Nan!"),
+                Err(_) => (),
             };    
         }
     
-        println!("winning_numbers: {:?}", numbers_split);
+        // println!("winning_numbers: {:?}", numbers_split);
 
         let mut given_numbers: Vec<u32> = Vec::new();
         for x in numbers_split.1.split(" "){
             match x.parse::<u32>() {
                 Ok(y) => given_numbers.push(y),
-                Err(_) => println!("Nan!"),
+                Err(_) => (),
             }; 
         };
 
-        Card { winning_numbers: winning_numbers, given_numbers: given_numbers }
+        let mut result = Card { winning_numbers: winning_numbers, given_numbers: given_numbers};
+        result
         
         // Card { winning_numbers: winning_numbers, given_numbers: given_numbers}
     }
@@ -74,7 +75,51 @@ impl Card {
 
         
     }
+
 }
+
+#[derive(Debug)]
+struct Cards{
+    cards: Vec<Card>,
+}
+
+impl Cards {
+    fn new() -> Cards {
+        Cards { cards: Vec::new() }
+    }
+
+    fn push(&mut self, card: Card) {
+        self.cards.push(card);
+    }
+
+    fn calc_rec (self) -> u32 {
+        // let mut position: usize = 0;
+        let mut copies= vec![1; self.cards.len()];
+    
+        for position in 0..copies.len(){
+            
+            let matching = &self.cards[position].get_matching_numbers().len();
+            // println!("Position: {position} with matching {matching}");
+            for _x in 0..copies[position]{
+                for i in position+1..=(position+matching) {
+                    // println!("Adding a copy to position {i}");
+                    copies[i] += 1;
+                }
+            }
+        }
+    
+        let mut total: u32 = 0;
+        for i in 0..copies.len(){
+            total += copies[i];
+        }
+
+        return total;
+    }
+
+}
+
+
+
 
 pub fn solve() -> SolutionPair {
     // Your solution here...
@@ -86,9 +131,7 @@ pub fn solve() -> SolutionPair {
 }
 
 fn solution1(input: &str) -> u32{
-    //first we split by : to disregard the first part.
-    // then we split by | to separate winning and given numbers
-    let mut cards: Vec<Card> = Vec::new();
+    let mut cards: Cards = Cards::new();
     for line in input.lines() {
         let card = Card::new(line);
         println!("We created a Card! {:?}", card);
@@ -97,23 +140,26 @@ fn solution1(input: &str) -> u32{
 
 
     let mut score: u32 = 0;
-    for card in cards {
+    for card in cards.cards {
         let value = card.get_value();
         println!("Here we are adding {value}!");
         score+=value
     }
     score
-    
-    //then we split by whitespace to get the numbers\
-
-    //then we transform Vec<&str> into Vec<u32>
-
-    //we create a card
-
-    //and call our functions
 }
 
 fn solution2(input: &str) -> u32{
-    0
+    println!("----------- Starting solution 2 -----------");
+    let mut cards: Cards = Cards::new();
+    for line in input.lines() {
+        let card = Card::new(line);
+        println!("We created a Card! {:?}", card);
+        cards.push(card);
+    }
+
+    let scratchcards = cards.calc_rec();
+
+    scratchcards
+
 }
 
